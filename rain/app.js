@@ -163,20 +163,22 @@
     }
 
     function spawnSplash(x, y, depth) {
-      var count = depth > 0.8 ? 3 : 2;
+      var count = depth > 0.8 ? 4 : 2;
       var n;
+      var dir = Math.random() < 0.5 ? -1 : 1;
       for (n = 0; n < count; n++) {
         var splash = splashes[splashCursor];
         splashCursor = (splashCursor + 1) % splashes.length;
         splash.alive = true;
-        splash.x = x + rand(-1.5, 1.5);
+        splash.x = x + rand(-1.2, 1.2);
         splash.y = y;
-        splash.vx = rand(-1, 1) * rand(40, 160) * depth;
-        splash.vy = -rand(30, 110) * depth;
-        splash.life = splash.max = rand(0.12, 0.26);
-        splash.w = rand(0.6, 1.15);
-        splash.len = rand(1.5, 4.5);
-        splash.alpha = 0.22 + depth * 0.38;
+        splash.vx = dir * rand(70, 220) * depth;
+        splash.vy = -rand(40, 150) * depth;
+        splash.life = splash.max = rand(0.16, 0.32);
+        splash.w = rand(0.7, 1.2);
+        splash.len = rand(5, 12) * (0.55 + depth * 0.45);
+        splash.alpha = 0.4 + depth * 0.4;
+        dir = -dir;
       }
     }
 
@@ -200,7 +202,7 @@
       dt = Math.min(0.034, (now - last) / 1000);
       last = now;
       time += dt;
-      wind = 0.11 + Math.sin(time * 0.17) * 0.03;
+      wind = 0.2 + Math.sin(time * 0.17) * 0.04;
 
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, width, height);
@@ -217,7 +219,7 @@
         if (!drop.hit && drop.y >= height) {
           drop.hit = true;
           if (drop.x > 0 && drop.x < width && Math.random() < drop.layer.splash) {
-            spawnSplash(drop.x, height - 2, drop.layer.depth);
+            spawnSplash(drop.x, height - 6, drop.layer.depth);
           }
         }
         if (drop.y - drop.len > height) {
@@ -262,11 +264,13 @@
         splash.y += splash.vy * dt;
         splash.vy += 420 * dt;
         life = splash.life / splash.max;
+        var mag = Math.hypot(splash.vx, splash.vy) || 1;
+        var span = splash.len * (0.45 + 0.55 * life);
         ctx.beginPath();
         ctx.globalAlpha = splash.alpha * life;
         ctx.lineWidth = splash.w;
         ctx.moveTo(splash.x, splash.y);
-        ctx.lineTo(splash.x - splash.vx * 0.016, splash.y - Math.min(splash.vy, 0) * 0.016 - splash.len * 0.15);
+        ctx.lineTo(splash.x - (splash.vx / mag) * span, splash.y - (splash.vy / mag) * span);
         ctx.stroke();
       }
 
