@@ -3,8 +3,8 @@
  * Sound is synthesized with the Web Audio API (looped filtered noise
  * plus soft droplet taps). There is no audio file and no license.
  *
- * The picture is intentionally calm: few drops, one slow vertical layer,
- * and dim blue-grey streaks, so the motion does not rush or lean.
+ * The picture is intentionally calm: few drops, one gentle vertical layer,
+ * and dim blue-grey streaks on pure black, so the motion does not rush or lean.
  */
 (function () {
   "use strict";
@@ -67,7 +67,6 @@
     var running = true;
     var last = 0;
     var raf = 0;
-    var background = null;
     var i;
 
     for (i = 0; i < splashPool; i++) {
@@ -93,7 +92,7 @@
       if (reduced) {
         return {
           len: [6, 11],
-          speed: [28, 42],
+          speed: [48, 72],
           alpha: [0.08, 0.15],
           width: [0.4, 0.65],
           splash: 0.65
@@ -101,7 +100,7 @@
       }
       return {
         len: [8, 15],
-        speed: [58, 88],
+        speed: [100, 150],
         alpha: [0.1, 0.2],
         width: [0.45, 0.75],
         splash: 0.8
@@ -141,13 +140,7 @@
     }
 
     function paintBackground() {
-      if (!background) {
-        background = ctx.createLinearGradient(0, 0, 0, Math.max(1, height));
-        background.addColorStop(0, "#090c12");
-        background.addColorStop(0.62, "#0c1219");
-        background.addColorStop(1, "#121a22");
-      }
-      ctx.fillStyle = background;
+      ctx.fillStyle = "#000000";
       ctx.fillRect(0, 0, width, height);
     }
 
@@ -167,7 +160,6 @@
       width = nextW;
       height = nextH;
       dpr = nextDpr;
-      background = null;
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
